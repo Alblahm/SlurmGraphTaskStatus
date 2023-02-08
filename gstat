@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Codigo creado por GPT3 con las indicaciones de Víctor Leborán
+# Para cualquier duda consulta a victor.leboran@usc.es at CITIUS
+
+# Obtener información sobre los nodos del cluster
+nodes_info=$(sinfo -N -h -o "%N %a %C")
+
+#echo "Información de los nodos"
+#echo "$nodes_info"
+#echo ""
+echo "                                                        Coded by Levo at CITIUS"
+echo "-------------------------------------------------------------------------------"
+echo "                 Cluster HPC3 nodes and resources chart                        "
+echo "-------------------------------------------------------------------------------"
+echo "  NodeId  State Pct Use                                                Free Res"
+
+
+# Procesar la información de los nodos
+while read -r node state numbers; do
+
+  # Obtener la cantidad de procesadores totales y disponibles para el nodo
+  total_procs=$(echo $numbers | cut -d"/" -f4)
+  avail_procs=$(echo $numbers | cut -d"/" -f1)
+  idle_procs=$(echo $numbers | cut -d"/" -f2)
+
+  # Calcular el porcentaje de uso de procesadores
+  proc_usage100=$(( (100 - (avail_procs * 100 / total_procs)) ))
+  proc_usage50=$(( (100 - (avail_procs * 100 / total_procs)) / 2 ))
+  proc_notusage50=$(( (50 - (proc_usage50)) ))
+
+  # Mostrar el nombre del nodo y la barra de porcentaje de uso de procesadores
+  if [ $proc_usage100 -lt 30 ]; then
+    printf "\033[0m %9s %4s %3d%%[\033[32m" $node $state $proc_usage100 
+  elif [ $proc_usage100 -gt 70 ]; then
+    printf "\033[0m %9s %4s %3d%%[\033[31m" $node $state $proc_usage100 
+  else
+    printf "\033[0m %9s %4s %3d%%[\033[33m" $node $state $proc_usage100 
+  fi
+
+  if [ "$state" == "up" ]; then
+
+    if [ $proc_usage50 -gt 0 ]; then
+      printf "%0.s=" $(seq $proc_usage50)
+    fi
+
+    if [ $proc_usage100 -lt 100 ]; then
+      printf "%0.s " $(seq $proc_notusage50)
+    fi
+
+    if [ $proc_usage100 -lt 30 ]; then
+      printf "\033[0m]\033[32m %2d/%2d\n" $avail_procs $total_procs
+    elif [ $proc_usage100 -gt 70 ]; then
+      printf "\033[0m]\033[31m %2d/%2d\n" $avail_procs $total_procs
+    else
+      printf "\033[0m]\033[33m %2d/%2d\n" $avail_procs $total_procs
+    fi
+
+  else
+    printf "\033[0m]\n"
+  fi
+
+done <<< "$nodes_info"
+
+echo ""
+printf "\033[0m"
