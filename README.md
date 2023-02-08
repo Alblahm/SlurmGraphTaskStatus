@@ -1,4 +1,4 @@
-# SlurmGraphTaskStatus
+# Slurm Graph Task Status <a href="https://github.com/Alblahm/SlurmGraphTaskStatus/blob/master/README.es.md"><img src="https://github.com/Alblahm/Voice-Controled-Acuarium/blob/master/img/Flag_of_Spain.png" align="right" hspace="0" vspace="0" width="35px"></a> <a href="https://github.com/Alblahm/SlurmGraphTaskStatus/blob/master/README.en.md"><img src="https://github.com/Alblahm/Voice-Controled-Acuarium/blob/master/img/Flag_of_Union.png" align="right" hspace="0" vspace="0" width="35px"></a>
 Show in console the status of the cluster nodes.
 
 <img src="https://github.com/Alblahm/SlurmGraphTaskStatus/blob/main/gStat.png" align="none" hspace="5" vspace="0" width="640px"></a>
@@ -12,12 +12,3 @@ Show in console the status of the cluster nodes.
   
   
  Ready !!! 
-.  
-.  
-.  
-.
-## Select your Language
-
-* ###[English](README.en.md) <a href="https://github.com/Alblahm/SlurmGraphTaskStatus/blob/master/README.en.md"><img src="https://github.com/Alblahm/Voice-Controled-Acuarium/blob/master/img/Flag_of_Union.png" align="none" hspace="5" vspace="0" width="25px"></a>
-
-* ###[Español](README.es.md) <a href="https://github.com/Alblahm/SlurmGraphTaskStatus/blob/master/README.es.md"><img src="https://github.com/Alblahm/Voice-Controled-Acuarium/blob/master/img/Flag_of_Spain.png" align="none" hspace="5" vspace="0" width="25px"></a>
