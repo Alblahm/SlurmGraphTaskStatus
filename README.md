@@ -1,2 +1,2 @@
 # SlurmGraphTaskStatus
-Shoe in console the status of the cluster nodes.
+Show in console the status of the cluster nodes.
