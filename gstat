@@ -6,8 +6,8 @@
 # Obtener información sobre los nodos del cluster
 nodes_info=$(sinfo -N -h -o "%N %a %C")
 
-echo "Información de los nodos"
-echo "$nodes_info"
+#echo "Información de los nodos"
+#echo "$nodes_info"
 #echo ""
 echo "                                                        Coded by Levo at CITIUS"
 echo "-------------------------------------------------------------------------------"
