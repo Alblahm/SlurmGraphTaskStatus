@@ -10,7 +10,7 @@ Muestra en consola el estado de uso de los nodos del cluster.
  * #####   3.- Añade esta línea al final del archivo y abre una nueva terminal
          alias gstat='~/gstat'
   #### Opción B
- * #####   1.- Copia el archivo "gStat" en el directorio /bin que está en el path.
+ * #####   1.- Copia el archivo "gStat" en el directorio /bin que está en el path y abre una nueva terminal
 
- Escribe ">> gstat" en el prompt y verás el estado actual de uso del los nodos como muestra la siguiente imagen.
+ Escribe ">> gstat" en el prompt y verás el estado actual de uso del los nodos como muestra la imagen de arriba.
  Listo !!! 
