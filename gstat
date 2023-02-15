@@ -6,14 +6,14 @@
 # Obtener información sobre los nodos del cluster
 nodes_info=$(sinfo -N -h -o "%N %a %C")
 
-#echo "Información de los nodos"
-#echo "$nodes_info"
+echo "Información de los nodos"
+echo "$nodes_info"
 #echo ""
 echo "                                                        Coded by Levo at CITIUS"
 echo "-------------------------------------------------------------------------------"
 echo "                 Cluster HPC3 nodes and resources chart                        "
 echo "-------------------------------------------------------------------------------"
-echo "  NodeId  State Pct Use                                                Free Res"
+echo "  NodeId  State Pct Use                                                Used Res"
 
 
 # Procesar la información de los nodos
@@ -21,12 +21,12 @@ while read -r node state numbers; do
 
   # Obtener la cantidad de procesadores totales y disponibles para el nodo
   total_procs=$(echo $numbers | cut -d"/" -f4)
-  avail_procs=$(echo $numbers | cut -d"/" -f1)
+  alloc_procs=$(echo $numbers | cut -d"/" -f1)
   idle_procs=$(echo $numbers | cut -d"/" -f2)
 
   # Calcular el porcentaje de uso de procesadores
-  proc_usage100=$(( (100 - (avail_procs * 100 / total_procs)) ))
-  proc_usage50=$(( (100 - (avail_procs * 100 / total_procs)) / 2 ))
+  proc_usage100=$(( ( (alloc_procs * 100 / total_procs)) ))
+  proc_usage50=$(( ( (alloc_procs * 100 / total_procs)) / 2 ))
   proc_notusage50=$(( (50 - (proc_usage50)) ))
 
   # Mostrar el nombre del nodo y la barra de porcentaje de uso de procesadores
@@ -49,11 +49,11 @@ while read -r node state numbers; do
     fi
 
     if [ $proc_usage100 -lt 30 ]; then
-      printf "\033[0m]\033[32m %2d/%2d\n" $avail_procs $total_procs
+      printf "\033[0m]\033[32m %2d/%2d\n" $alloc_procs $total_procs
     elif [ $proc_usage100 -gt 70 ]; then
-      printf "\033[0m]\033[31m %2d/%2d\n" $avail_procs $total_procs
+      printf "\033[0m]\033[31m %2d/%2d\n" $alloc_procs $total_procs
     else
-      printf "\033[0m]\033[33m %2d/%2d\n" $avail_procs $total_procs
+      printf "\033[0m]\033[33m %2d/%2d\n" $alloc_procs $total_procs
     fi
 
   else
