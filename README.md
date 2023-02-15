@@ -4,11 +4,12 @@ Show in console the status of the cluster nodes.
 <img src="https://github.com/Alblahm/SlurmGraphTaskStatus/blob/main/gStat_Im.png" align="none" hspace="5" vspace="0" width="640px"></a>
 
   ### To install this bash script in your own terminal:
+  #### Option A  
  * #####   1.- Copy and paste the "gStat" in your home folder.
  * #####   2.- Edit the ".bashrc" file located in the home folder
  * #####   3.- Add this line to the file, and restart the console.
          alias gstat='~/gstat'
- * #####   4.- type gstat at the prompt and you will see the state of the nodes as in this image.
+  #### Option B
+ * #####   1.- Copy the file "gStat" in your /bin folder, it is in the system path, and restart the console.
   
-  
- Ready !!! 
+ Type gstat at the prompt and you will see the state of the nodes as in this image.  Ready !!! 
