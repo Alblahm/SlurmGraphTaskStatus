@@ -50,9 +50,6 @@ while read -r node state numbers; do
     # Si solo lo está usando un proceso y ocupa toda la memoria
     proc_notusage=$(( $proc_notusage50 ))
 	if [ $nUserProc == "1" ]; then
-	  idUserProc=`squeue | grep $node | xargs | cut -d" " -f1` 
-	  #idUserInfo=`scontrol show jobid $idUserProc | grep TRES | xargs | cut -d"," -f2 | cut -d"=" -f2`
-	  #idNodeInfo=`scontrol show jobid $idUserProc | grep MinMemoryNode | xargs | cut -d" " -f2 | cut -d"=" -f2`
 	  idNodeRealMem=`scontrol show node $node | grep "RealMemory" | xargs | cut -d" " -f1 | cut -d"=" -f2`	
 	  idNodeAllocMem=`scontrol show node $node | grep "RealMemory" | xargs | cut -d" " -f2 | cut -d"=" -f2`	
 	  if [ $idNodeRealMem == $idNodeAllocMem ]; then
