@@ -3,7 +3,7 @@
 # Codigo creado por GPT3 con las indicaciones de Víctor Leborán
 # Para cualquier duda consulta a victor.leboran@usc.es at CITIUS
 
-# Obtener información sobre los nodos del cluster, también informa si hay algún usuario con un nodo en modo Exclusivo
+# Obtener información sobre los nodos del cluster
 nodes_info=$(sinfo -N -h -o "%N %a %C")
 
 #echo "Información de los nodos"
@@ -15,7 +15,7 @@ echo "                 Cluster HPC3 nodes and resources chart                   
 echo "-------------------------------------------------------------------------------"
 echo "  NodeId  State Pct Use                                                Used Res"
 
-
+bColor="\033[0m"
 # Procesar la información de los nodos
 while read -r node state numbers; do
 
@@ -29,23 +29,24 @@ while read -r node state numbers; do
   proc_usage50=$(( ( (alloc_procs * 100 / total_procs)) / 2 ))
   proc_notusage50=$(( (50 - (proc_usage50)) ))
 
-  # Mostrar el nombre del nodo y la barra de porcentaje de uso de procesadores
+  # Configuración del color de la barra del nodo actual
   if [ $proc_usage100 -lt 30 ]; then
-    printf "\033[0m %9s %4s %3d%%[\033[32m" $node $state $proc_usage100 
+    fColor="\033[32m"
   elif [ $proc_usage100 -gt 70 ]; then
-    printf "\033[0m %9s %4s %3d%%[\033[31m" $node $state $proc_usage100 
+    fColor="\033[31m"
   else
-    printf "\033[0m %9s %4s %3d%%[\033[33m" $node $state $proc_usage100 
+    fColor="\033[33m"
   fi
-
+  
+  # Mostrar el nombre del nodo y la barra de porcentaje de uso de procesadores  
+  printf "\033[0m %9s %4s %3d%%[$fColor" $node $state $proc_usage100 
   if [ "$state" == "up" ]; then
-
     if [ $proc_usage50 -gt 0 ]; then
       printf "%0.s=" $(seq $proc_usage50)
     fi
 	
     # Se comprueba cuantos procesos están usando ese nodo
-    nUserProc=`squeue | grep $node | wc -l`
+    nUserProc=`squeue --nodelist $node | grep $node | wc -l`
 
     # Si solo lo está usando un proceso y ocupa toda la memoria
     proc_notusage=$(( $proc_notusage50 ))
@@ -55,20 +56,15 @@ while read -r node state numbers; do
 	  if [ $idNodeRealMem == $idNodeAllocMem ]; then
 			printf "  \033[31mEXLUSIVE  "
 			proc_notusage=$(( $proc_notusage50 - 12))
+			fColor="\033[31m"
 	  fi
 	fi
-
+	# Comprobación para no añadir un caracter de más al final
     if [ $proc_usage100 -lt 100 ]; then
       printf "%0.s " $(seq $proc_notusage)
     fi
-	
-    if [ $proc_usage100 -lt 30 ]; then
-      printf "\033[0m]\033[32m %2d/%2d\n" $alloc_procs $total_procs
-    elif [ $proc_usage100 -gt 70 ]; then
-      printf "\033[0m]\033[31m %2d/%2d\n" $alloc_procs $total_procs
-    else
-      printf "\033[0m]\033[33m %2d/%2d\n" $alloc_procs $total_procs
-    fi
+	# Información numérica de los recursos usados en color
+    printf "\033[0m]$fColor %2d/%2d\n" $alloc_procs $total_procs	
 
   else
     printf "\033[0m]\n"
