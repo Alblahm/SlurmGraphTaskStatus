@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Codigo creado por GPT3 con las indicaciones de Víctor Leborán
+# Para cualquier duda consulta a victor.leboran@usc.es at CITIUS
+
+# Obtener información sobre los nodos del cluster, también informa si hay algún usuario con un nodo en modo Exclusivo
+nodes_info=$(sinfo -N -h -o "%N %a %C")
+
+#echo "Información de los nodos"
+#echo "$nodes_info"
+#echo ""
+echo "                                                        Coded by Levo at CITIUS"
+echo "-------------------------------------------------------------------------------"
+echo "                 Cluster HPC3 nodes and resources chart                        "
+echo "-------------------------------------------------------------------------------"
+echo "  NodeId  State Pct Use                                                Used Res"
+
+
+# Procesar la información de los nodos
+while read -r node state numbers; do
+
+  # Obtener la cantidad de procesadores totales y disponibles para el nodo
+  total_procs=$(echo $numbers | cut -d"/" -f4)
+  alloc_procs=$(echo $numbers | cut -d"/" -f1)
+  idle_procs=$(echo $numbers | cut -d"/" -f2)
+
+  # Calcular el porcentaje de uso de procesadores
+  proc_usage100=$(( ( (alloc_procs * 100 / total_procs)) ))
+  proc_usage50=$(( ( (alloc_procs * 100 / total_procs)) / 2 ))
+  proc_notusage50=$(( (50 - (proc_usage50)) ))
+
+  # Mostrar el nombre del nodo y la barra de porcentaje de uso de procesadores
+  if [ $proc_usage100 -lt 30 ]; then
+    printf "\033[0m %9s %4s %3d%%[\033[32m" $node $state $proc_usage100 
+  elif [ $proc_usage100 -gt 70 ]; then
+    printf "\033[0m %9s %4s %3d%%[\033[31m" $node $state $proc_usage100 
+  else
+    printf "\033[0m %9s %4s %3d%%[\033[33m" $node $state $proc_usage100 
+  fi
+
+  if [ "$state" == "up" ]; then
+
+    if [ $proc_usage50 -gt 0 ]; then
+      printf "%0.s=" $(seq $proc_usage50)
+    fi
+	
+    # Se comprueba cuantos procesos están usando ese nodo
+    nUserProc=`squeue | grep $node | wc -l`
+
+    # Si solo lo está usando un proceso y ocupa toda la memoria
+    proc_notusage=$(( $proc_notusage50 ))
+	if [ $nUserProc == "1" ]; then
+	  idUserProc=`squeue | grep $node | xargs | cut -d" " -f1` 
+	  #idUserInfo=`scontrol show jobid $idUserProc | grep TRES | xargs | cut -d"," -f2 | cut -d"=" -f2`
+	  #idNodeInfo=`scontrol show jobid $idUserProc | grep MinMemoryNode | xargs | cut -d" " -f2 | cut -d"=" -f2`
+	  idNodeRealMem=`scontrol show node $node | grep "RealMemory" | xargs | cut -d" " -f1 | cut -d"=" -f2`	
+	  idNodeAllocMem=`scontrol show node $node | grep "RealMemory" | xargs | cut -d" " -f2 | cut -d"=" -f2`	
+	  if [ $idNodeRealMem == $idNodeAllocMem ]; then
+			printf "  \033[31mEXLUSIVE  "
+			proc_notusage=$(( $proc_notusage50 - 12))
+	  fi
+	fi
+
+    if [ $proc_usage100 -lt 100 ]; then
+      printf "%0.s " $(seq $proc_notusage)
+    fi
+	
+    if [ $proc_usage100 -lt 30 ]; then
+      printf "\033[0m]\033[32m %2d/%2d\n" $alloc_procs $total_procs
+    elif [ $proc_usage100 -gt 70 ]; then
+      printf "\033[0m]\033[31m %2d/%2d\n" $alloc_procs $total_procs
+    else
+      printf "\033[0m]\033[33m %2d/%2d\n" $alloc_procs $total_procs
+    fi
+
+  else
+    printf "\033[0m]\n"
+  fi
+
+done <<< "$nodes_info"
+
+echo ""
+printf "\033[0m"
